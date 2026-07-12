@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noai, noimageai">
+<title>轟音日誌 | NOISE JOURNAL</title>
+<meta name="description" content="ロックミュージックをめぐる個人的な記録サイト。日記、ギャラリー、プレイリスト。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Antique+B1&family=Anton&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#0b0a08;
+    --panel:#161310;
+    --panel-line:#2a251f;
+    --red:#d62828;
+    --red-dark:#7a1414;
+    --paper:#ede7da;
+    --paper-dim:#a89f8d;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--black);
+    color:var(--paper);
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    line-height:1.8;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none;}
+  ::selection{background:var(--red);color:var(--black);}
+
+  /* noise texture overlay */
+  body::before{
+    content:"";
+    position:fixed;inset:0;
+    pointer-events:none;
+    z-index:999;
+    opacity:0.035;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .rec-indicator{
+    position:fixed;
+    top:18px; right:20px;
+    z-index:1000;
+    display:flex;align-items:center;gap:8px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.7rem;
+    letter-spacing:0.15em;
+    color:var(--paper-dim);
+    mix-blend-mode:difference;
+  }
+  .rec-dot{
+    width:8px;height:8px;border-radius:50%;
+    background:var(--red);
+    animation:pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{opacity:1; box-shadow:0 0 0 0 rgba(214,40,40,0.5);}
+    50%{opacity:0.4; box-shadow:0 0 0 6px rgba(214,40,40,0);}
+  }
+
+  header{
+    position:sticky; top:0; z-index:100;
+    background:rgba(11,10,8,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--panel-line);
+  }
+  .nav-wrap{
+    max-width:1100px;margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 24px;
+  }
+  .site-mark{
+    font-family:'Shippori Antique B1', sans-serif;
+    font-size:1.15rem;
+    letter-spacing:0.05em;
+  }
+  .site-mark span{color:var(--red);}
+  nav ul{
+    display:flex;gap:22px;list-style:none;
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.72rem;
+    letter-spacing:0.08em;
+  }
+  nav a{
+    position:relative;
+    padding-bottom:4px;
+    color:var(--paper-dim);
+    transition:color 0.25s;
+  }
+  nav a:hover, nav a.active{color:var(--paper);}
+  nav a::after{
+    content:"";position:absolute;left:0;bottom:0;
+    width:0;height:1px;background:var(--red);
+    transition:width 0.25s;
+  }
+  nav a:hover::after{width:100%;}
+
+  /* HERO */
+  .hero{
+    position:relative;
+    min-height:88vh;
+    display:flex;flex-direction:column;justify-content:center;
+    padding:0 24px;
+    overflow:hidden;
+  }
+  .eq-bars{
+    position:absolute;
+    left:0;right:0;bottom:0;
+    height:46%;
+    display:flex;align-items:flex-end;gap:3px;
+    padding:0 4px;
+    opacity:0.5;
+    z-index:0;
+  }
+  .eq-bars span{
+    flex:1;
+    background:linear-gradient(to top, var(--red-dark), var(--red));
+    animation:eq 1.4s ease-in-out infinite;
+    transform-origin:bottom;
+  }
+  @keyframes eq{
+    0%,100%{transform:scaleY(0.15);}
+    50%{transform:scaleY(1);}
+  }
+  .hero-inner{position:relative;z-index:1;max-width:1100px;margin:0 auto;width:100%;}
+  .hero-eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.75rem;
+    letter-spacing:0.3em;
+    color:var(--red);
+    margin-bottom:18px;
+  }
+  h1.hero-title{
+    font-family:'Shippori Antique B1', sans-serif;
+    font-size:clamp(3rem, 12vw, 7.5rem);
+    line-height:0.95;
+    letter-spacing:0.02em;
+    color:var(--paper);
+    text-shadow:3px 3px 0 var(--red-dark);
+  }
+  .hero-sub{
+    font-family:'Anton', sans-serif;
+    font-size:clamp(0.9rem, 2vw, 1.3rem);
+    letter-spacing:0.35em;
+    color:var(--paper-dim);
+    margin-top:20px;
+  }
+  .hero-desc{
+    max-width:44ch;
+    margin-top:28px;
+    color:var(--paper-dim);
+    font-size:0.95rem;
+  }
+
+  section{max-width:1100px;margin:0 auto;padding:100px 24px;}
+  .section-head{
+    display:flex;align-items:baseline;gap:16px;
+    margin-bottom:48px;
+    border-bottom:1px solid var(--panel-line);
+    padding-bottom:16px;
+  }
+  .section-head .num{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--red);
+    font-size:0.85rem;
+  }
+  .section-head h2{
+    font-family:'Shippori Antique B1', sans-serif;
+    font-size:1.6rem;
+    letter-spacing:0.04em;
+  }
+
+  /* SETLIST NAV */
+  .setlist{list-style:none;}
+  .setlist li{
+    border-bottom:1px solid var(--panel-line);
+  }
+  .setlist a{
+    display:flex;align-items:center;gap:24px;
+    padding:26px 8px;
+    transition:background 0.25s, padding-left 0.25s;
+  }
+  .setlist a:hover{
+    background:var(--panel);
+    padding-left:20px;
+  }
+  .track-no{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--red);
+    font-size:0.9rem;
+    width:2.4em;
+    flex-shrink:0;
+  }
+  .track-info{flex:1;}
+  .track-title{
+    font-family:'Shippori Antique B1', sans-serif;
+    font-size:1.4rem;
+    letter-spacing:0.02em;
+  }
+  .track-en{
+    font-family:'Anton', sans-serif;
+    font-size:0.6rem;
+    letter-spacing:0.2em;
+    color:var(--paper-dim);
+    margin-top:2px;
+  }
+  .track-desc{
+    color:var(--paper-dim);
+    font-size:0.85rem;
+    margin-top:8px;
+  }
+  .track-arrow{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--paper-dim);
+    transition:transform 0.25s, color 0.25s;
+  }
+  .setlist a:hover .track-arrow{
+    transform:translateX(6px);
+    color:var(--red);
+  }
+
+  /* ABOUT BLURB */
+  .about-text{
+    max-width:60ch;
+    color:var(--paper-dim);
+    font-size:0.98rem;
+  }
+  .about-text strong{color:var(--paper);font-weight:700;}
+
+  /* OTHER STAGES / LINK GRID */
+  .stage-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(160px, 1fr));
+    gap:1px;
+    background:var(--panel-line);
+    border:1px solid var(--panel-line);
+  }
+  .stage-grid a{
+    background:var(--black);
+    padding:22px 18px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.78rem;
+    letter-spacing:0.05em;
+    color:var(--paper-dim);
+    transition:background 0.25s, color 0.25s;
+  }
+  .stage-grid a:hover{
+    background:var(--red);
+    color:var(--black);
+  }
+
+  /* CONTACT */
+  .contact-form{
+    display:flex;flex-direction:column;gap:14px;
+    max-width:480px;
+  }
+  .contact-form input,
+  .contact-form textarea{
+    background:var(--panel);
+    border:1px solid var(--panel-line);
+    color:var(--paper);
+    padding:14px 16px;
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    font-size:0.9rem;
+  }
+  .contact-form input:focus,
+  .contact-form textarea:focus{
+    outline:none;
+    border-color:var(--red);
+  }
+  .contact-form textarea{resize:vertical;min-height:120px;}
+  .contact-form button{
+    align-self:flex-start;
+    background:var(--red);
+    color:var(--black);
+    border:none;
+    padding:14px 32px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.8rem;
+    letter-spacing:0.1em;
+    cursor:pointer;
+    transition:background 0.25s;
+  }
+  .contact-form button:hover{background:var(--paper);}
+
+  footer{
+    border-top:1px solid var(--panel-line);
+    padding:48px 24px 32px;
+  }
+  .footer-inner{
+    max-width:1100px;margin:0 auto;
+    display:flex;flex-direction:column;gap:18px;
+  }
+  .ai-notice{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.68rem;
+    letter-spacing:0.03em;
+    color:var(--paper-dim);
+    line-height:1.7;
+    border-left:2px solid var(--red);
+    padding-left:14px;
+  }
+  .copyright{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.68rem;
+    color:var(--paper-dim);
+    opacity:0.6;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .rec-dot, .eq-bars span{animation:none;}
+  }
+
+  @media (max-width:640px){
+    nav ul{gap:14px;}
+    .track-title{font-size:1.15rem;}
+    section{padding:70px 20px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="rec-indicator"><span class="rec-dot"></span>REC</div>
+
+<header>
+  <div class="nav-wrap">
+    <div class="site-mark">轟音<span>日誌</span></div>
+    <nav>
+      <ul>
+        <li><a href="index.html" class="active">HOME</a></li>
+        <li><a href="blog.html">DIARY</a></li>
+        <li><a href="gallery.html">GALLERY</a></li>
+        <li><a href="playlist.html">PLAYLIST</a></li>
+        <li><a href="about.html">ABOUT</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="eq-bars" id="eqBars"></div>
+  <div class="hero-inner">
+    <p class="hero-eyebrow">NOISE JOURNAL — EST. 2026</p>
+    <h1 class="hero-title">轟音日誌</h1>
+    <p class="hero-sub">ROCK &nbsp;IS&nbsp; NOISE&nbsp; I&nbsp; TRUST</p>
+    <p class="hero-desc">爆音の向こう側で聴こえてくるものを、忘れないうちに書き留めておく場所。日々のノイズと、そこから拾い上げた音楽の記録。</p>
+  </div>
+</div>
+
+<section id="setlist-section">
+  <div class="section-head">
+    <span class="num">SIDE A</span>
+    <h2>SETLIST</h2>
+  </div>
+  <ul class="setlist">
+    <li>
+      <a href="blog.html">
+        <span class="track-no">01</span>
+        <span class="track-info">
+          <span class="track-title">日記</span>
+          <span class="track-en">DIARY</span>
+          <span class="track-desc">聴いた音、感じたことをその日のうちに。</span>
+        </span>
+        <span class="track-arrow">→</span>
+      </a>
+    </li>
+    <li>
+      <a href="gallery.html">
+        <span class="track-no">02</span>
+        <span class="track-info">
+          <span class="track-title">ギャラリー</span>
+          <span class="track-en">GALLERY</span>
+          <span class="track-desc">ライブ、ジャケット、風景。</span>
+        </span>
+        <span class="track-arrow">→</span>
+      </a>
+    </li>
+    <li>
+      <a href="playlist.html">
+        <span class="track-no">03</span>
+        <span class="track-info">
+          <span class="track-title">プレイリスト</span>
+          <span class="track-en">PLAYLIST</span>
+          <span class="track-desc">今の気分を並べたセットリスト。</span>
+        </span>
+        <span class="track-arrow">→</span>
+      </a>
+    </li>
+    <li>
+      <a href="about.html">
+        <span class="track-no">04</span>
+        <span class="track-info">
+          <span class="track-title">このサイトについて</span>
+          <span class="track-en">ABOUT</span>
+          <span class="track-desc">運営者と、このサイトの成り立ち。</span>
+        </span>
+        <span class="track-arrow">→</span>
+      </a>
+    </li>
+  </ul>
+</section>
+
+<section id="about-blurb">
+  <div class="section-head">
+    <span class="num">NOTE</span>
+    <h2>このサイトについて</h2>
+  </div>
+  <p class="about-text">
+    ロックというジャンルの、大きすぎる歴史や理論の話ではなく、<strong>個人的に浴びてきた音の記録</strong>です。好きなバンド、たまたま流れてきた一曲、ライブハウスの匂い。そういう断片を、なるべく自分の言葉のまま残しておきたくて作りました。
+  </p>
+</section>
+
+<section id="other-stages">
+  <div class="section-head">
+    <span class="num">LINKS</span>
+    <h2>OTHER STAGES</h2>
+  </div>
+  <div class="stage-grid">
+    <a href="https://rookie.shonenjump.com/" target="_blank" rel="noopener">JUMP ROOKIE</a>
+    <a href="https://days-neo.com/" target="_blank" rel="noopener">DaysNEO</a>
+    <a href="https://www.pixiv.net/" target="_blank" rel="noopener">Pixiv</a>
+    <a href="https://kakuyomu.jp/" target="_blank" rel="noopener">Kakuyomu</a>
+    <a href="https://bsky.app/" target="_blank" rel="noopener">Bluesky</a>
+    <a href="https://www.youtube.com/" target="_blank" rel="noopener">YouTube: リリポピ</a>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="section-head">
+    <span class="num">CONTACT</span>
+    <h2>お便り</h2>
+  </div>
+  <form class="contact-form" action="https://formspree.io/f/maqvpvoz" method="POST">
+    <input type="text" name="name" placeholder="お名前" required>
+    <input type="email" name="email" placeholder="メールアドレス" required>
+    <textarea name="message" placeholder="メッセージ" required></textarea>
+    <button type="submit">送信する</button>
+  </form>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <p class="ai-notice">
+      当サイトに掲載されている文章・画像等のコンテンツを、AI（人工知能）の学習データとして無断で使用することを禁じます。<br>
+      This site prohibits the unauthorized use of its content (text, images) for AI training purposes.
+    </p>
+    <p class="copyright">© 2026 轟音日誌 — Azalea Creative Room</p>
+  </div>
+</footer>
+
+<script>
+  // EQバーを生成
+  const bars = document.getElementById('eqBars');
+  const count = 40;
+  for(let i=0;i<count;i++){
+    const bar = document.createElement('span');
+    bar.style.animationDelay = (Math.random()*1.4).toFixed(2)+'s';
+    bar.style.animationDuration = (1.0 + Math.random()*0.8).toFixed(2)+'s';
+    bars.appendChild(bar);
+  }
+</script>
+
+</body>
+</html>
