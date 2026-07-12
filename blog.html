@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noai, noimageai">
+<title>DIARY | 轟音日誌</title>
+<meta name="description" content="ロックをめぐる日々の記録。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Antique+B1&family=Anton&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#0b0a08;
+    --panel:#161310;
+    --panel-line:#2a251f;
+    --red:#d62828;
+    --red-dark:#7a1414;
+    --paper:#ede7da;
+    --paper-dim:#a89f8d;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--black);
+    color:var(--paper);
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    line-height:1.8;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none;}
+  ::selection{background:var(--red);color:var(--black);}
+
+  body::before{
+    content:"";
+    position:fixed;inset:0;
+    pointer-events:none;
+    z-index:999;
+    opacity:0.035;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .rec-indicator{
+    position:fixed;top:18px;right:20px;z-index:1000;
+    display:flex;align-items:center;gap:8px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.7rem;letter-spacing:0.15em;
+    color:var(--paper-dim);
+    mix-blend-mode:difference;
+  }
+  .rec-dot{
+    width:8px;height:8px;border-radius:50%;
+    background:var(--red);
+    animation:pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(214,40,40,0.5);}
+    50%{opacity:0.4;box-shadow:0 0 0 6px rgba(214,40,40,0);}
+  }
+
+  header{
+    position:sticky;top:0;z-index:100;
+    background:rgba(11,10,8,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--panel-line);
+  }
+  .nav-wrap{
+    max-width:1100px;margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 24px;
+  }
+  .site-mark{
+    font-family:'Shippori Antique B1', sans-serif;
+    font-size:1.15rem;letter-spacing:0.05em;
+  }
+  .site-mark span{color:var(--red);}
+  nav ul{
+    display:flex;gap:22px;list-style:none;
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.72rem;letter-spacing:0.08em;
+  }
+  nav a{
+    position:relative;padding-bottom:4px;
+    color:var(--paper-dim);transition:color 0.25s;
+  }
+  nav a:hover, nav a.active{color:var(--paper);}
+  nav a::after{
+    content:"";position:absolute;left:0;bottom:0;
+    width:0;height:1px;background:var(--red);
+    transition:width 0.25s;
+  }
+  nav a:hover::after{width:100%;}
+  nav a.active::after{width:100%;}
+
+  .page-hero{
+    max-width:1100px;margin:0 auto;
+    padding:80px 24px 40px;
+    border-bottom:1px solid var(--panel-line);
+  }
+  .page-eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.75rem;letter-spacing:0.3em;
+    color:var(--red);margin-bottom:14px;
+  }
+  h1.page-title{
+    font-family:'Shippori Antique B1', sans-serif;
+    font-size:clamp(2.4rem, 7vw, 4rem);
+    letter-spacing:0.02em;
+    text-shadow:2px 2px 0 var(--red-dark);
+  }
+  .page-sub{
+    font-family:'Anton', sans-serif;
+    font-size:0.85rem;letter-spacing:0.3em;
+    color:var(--paper-dim);margin-top:14px;
+  }
+
+  main{max-width:800px;margin:0 auto;padding:60px 24px 120px;}
+
+  .diary-entry{
+    display:grid;
+    grid-template-columns:110px 1fr;
+    gap:28px;
+    padding:40px 0;
+    border-bottom:1px solid var(--panel-line);
+  }
+  .diary-entry:first-of-type{padding-top:0;}
+  .diary-date{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.8rem;
+    color:var(--red);
+    line-height:1.6;
+    padding-top:4px;
+  }
+  .diary-date .year{
+    display:block;
+    color:var(--paper-dim);
+    font-size:0.7rem;
+  }
+  .diary-text{
+    font-size:0.98rem;
+    color:var(--paper);
+  }
+  .diary-text p + p{margin-top:1em;}
+
+  @media (max-width:560px){
+    .diary-entry{
+      grid-template-columns:1fr;
+      gap:10px;
+    }
+    .diary-date{
+      display:flex;align-items:baseline;gap:10px;
+      padding-top:0;
+    }
+    .diary-date .year{display:inline;}
+  }
+
+  footer{
+    border-top:1px solid var(--panel-line);
+    padding:48px 24px 32px;
+  }
+  .footer-inner{
+    max-width:1100px;margin:0 auto;
+    display:flex;flex-direction:column;gap:18px;
+  }
+  .ai-notice{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.68rem;letter-spacing:0.03em;
+    color:var(--paper-dim);line-height:1.7;
+    border-left:2px solid var(--red);
+    padding-left:14px;
+  }
+  .copyright{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.68rem;color:var(--paper-dim);opacity:0.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="rec-indicator"><span class="rec-dot"></span>REC</div>
+
+<header>
+  <div class="nav-wrap">
+    <div class="site-mark">轟音<span>日誌</span></div>
+    <nav>
+      <ul>
+        <li><a href="index.html">HOME</a></li>
+        <li><a href="blog.html" class="active">DIARY</a></li>
+        <li><a href="gallery.html">GALLERY</a></li>
+        <li><a href="playlist.html">PLAYLIST</a></li>
+        <li><a href="about.html">ABOUT</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="page-hero">
+  <p class="page-eyebrow">TRACK 01</p>
+  <h1 class="page-title">日記</h1>
+  <p class="page-sub">DIARY</p>
+</div>
+
+<main>
+  <article class="diary-entry">
+    <div class="diary-date"><span class="year">2026</span>07.12</div>
+    <div class="diary-text">
+      <p>ここに日記を書いていきます。日付と本文だけのシンプルな形式です。</p>
+    </div>
+  </article>
+
+  <article class="diary-entry">
+    <div class="diary-date"><span class="year">2026</span>07.05</div>
+    <div class="diary-text">
+      <p>サンプルの記事です。新しい記事はこの上に追加していってください。</p>
+    </div>
+  </article>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <p class="ai-notice">
+      当サイトに掲載されている文章・画像等のコンテンツを、AI（人工知能）の学習データとして無断で使用することを禁じます。<br>
+      This site prohibits the unauthorized use of its content (text, images) for AI training purposes.
+    </p>
+    <p class="copyright">© 2026 轟音日誌 — Azalea Creative Room</p>
+  </div>
+</footer>
+
+</body>
+</html>
