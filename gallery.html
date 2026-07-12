@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noai, noimageai">
+<title>GALLERY | 轟音日誌</title>
+<meta name="description" content="ライブ、ジャケット、風景。ロックにまつわる画像の記録。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Antique+B1&family=Anton&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#0b0a08;
+    --panel:#161310;
+    --panel-line:#2a251f;
+    --red:#d62828;
+    --red-dark:#7a1414;
+    --paper:#ede7da;
+    --paper-dim:#a89f8d;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--black);
+    color:var(--paper);
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    line-height:1.8;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none;}
+  ::selection{background:var(--red);color:var(--black);}
+
+  body::before{
+    content:"";
+    position:fixed;inset:0;
+    pointer-events:none;
+    z-index:999;
+    opacity:0.035;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .rec-indicator{
+    position:fixed;top:18px;right:20px;z-index:1000;
+    display:flex;align-items:center;gap:8px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.7rem;letter-spacing:0.15em;
+    color:var(--paper-dim);
+    mix-blend-mode:difference;
+  }
+  .rec-dot{
+    width:8px;height:8px;border-radius:50%;
+    background:var(--red);
+    animation:pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(214,40,40,0.5);}
+    50%{opacity:0.4;box-shadow:0 0 0 6px rgba(214,40,40,0);}
+  }
+
+  header{
+    position:sticky;top:0;z-index:100;
+    background:rgba(11,10,8,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--panel-line);
+  }
+  .nav-wrap{
+    max-width:1100px;margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 24px;
+  }
+  .site-mark{
+    font-family:'Shippori Antique B1', sans-serif;
+    font-size:1.15rem;letter-spacing:0.05em;
+  }
+  .site-mark span{color:var(--red);}
+  nav ul{
+    display:flex;gap:22px;list-style:none;
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.72rem;letter-spacing:0.08em;
+  }
+  nav a{
+    position:relative;padding-bottom:4px;
+    color:var(--paper-dim);transition:color 0.25s;
+  }
+  nav a:hover, nav a.active{color:var(--paper);}
+  nav a::after{
+    content:"";position:absolute;left:0;bottom:0;
+    width:0;height:1px;background:var(--red);
+    transition:width 0.25s;
+  }
+  nav a:hover::after{width:100%;}
+  nav a.active::after{width:100%;}
+
+  .page-hero{
+    max-width:1100px;margin:0 auto;
+    padding:80px 24px 40px;
+    border-bottom:1px solid var(--panel-line);
+  }
+  .page-eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.75rem;letter-spacing:0.3em;
+    color:var(--red);margin-bottom:14px;
+  }
+  h1.page-title{
+    font-family:'Shippori Antique B1', sans-serif;
+    font-size:clamp(2.4rem, 7vw, 4rem);
+    letter-spacing:0.02em;
+    text-shadow:2px 2px 0 var(--red-dark);
+  }
+  .page-sub{
+    font-family:'Anton', sans-serif;
+    font-size:0.85rem;letter-spacing:0.3em;
+    color:var(--paper-dim);margin-top:14px;
+  }
+
+  main{max-width:1100px;margin:0 auto;padding:60px 24px 120px;}
+
+  .filter-tabs{
+    display:flex;gap:8px;flex-wrap:wrap;
+    margin-bottom:40px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.72rem;letter-spacing:0.08em;
+  }
+  .filter-tabs button{
+    background:transparent;
+    border:1px solid var(--panel-line);
+    color:var(--paper-dim);
+    padding:8px 16px;
+    cursor:pointer;
+    transition:all 0.2s;
+  }
+  .filter-tabs button:hover{border-color:var(--red);color:var(--paper);}
+  .filter-tabs button.active{
+    background:var(--red);
+    border-color:var(--red);
+    color:var(--black);
+  }
+
+  .gallery-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));
+    gap:4px;
+  }
+  .gallery-item{
+    position:relative;
+    aspect-ratio:4/5;
+    overflow:hidden;
+    background:var(--panel);
+    border:1px solid var(--panel-line);
+    cursor:pointer;
+  }
+  .gallery-item img{
+    width:100%;height:100%;
+    object-fit:cover;
+    display:block;
+    filter:grayscale(30%) contrast(1.05);
+    transition:transform 0.5s ease, filter 0.5s ease;
+  }
+  .gallery-item:hover img{
+    transform:scale(1.06);
+    filter:grayscale(0%) contrast(1.1);
+  }
+  .gallery-placeholder{
+    width:100%;height:100%;
+    display:flex;align-items:center;justify-content:center;
+    background:
+      repeating-linear-gradient(135deg, #1c1a17 0 2px, #161310 2px 14px);
+    color:var(--panel-line);
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.7rem;
+    letter-spacing:0.1em;
+    text-align:center;
+    padding:10px;
+  }
+  .gallery-caption{
+    position:absolute;left:0;right:0;bottom:0;
+    padding:14px 16px 12px;
+    background:linear-gradient(to top, rgba(11,10,8,0.92), transparent);
+    opacity:0;
+    transform:translateY(6px);
+    transition:opacity 0.3s, transform 0.3s;
+  }
+  .gallery-item:hover .gallery-caption{
+    opacity:1;
+    transform:translateY(0);
+  }
+  .gallery-caption .cap-title{
+    font-family:'Shippori Antique B1', sans-serif;
+    font-size:0.95rem;
+  }
+  .gallery-caption .cap-date{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.65rem;
+    color:var(--red);
+    margin-top:2px;
+  }
+
+  .gallery-note{
+    margin-top:32px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.72rem;
+    color:var(--paper-dim);
+    opacity:0.7;
+  }
+
+  footer{
+    border-top:1px solid var(--panel-line);
+    padding:48px 24px 32px;
+  }
+  .footer-inner{
+    max-width:1100px;margin:0 auto;
+    display:flex;flex-direction:column;gap:18px;
+  }
+  .ai-notice{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.68rem;letter-spacing:0.03em;
+    color:var(--paper-dim);line-height:1.7;
+    border-left:2px solid var(--red);
+    padding-left:14px;
+  }
+  .copyright{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.68rem;color:var(--paper-dim);opacity:0.6;
+  }
+
+  @media (max-width:560px){
+    .gallery-grid{grid-template-columns:repeat(2, 1fr);}
+  }
+</style>
+</head>
+<body>
+
+<div class="rec-indicator"><span class="rec-dot"></span>REC</div>
+
+<header>
+  <div class="nav-wrap">
+    <div class="site-mark">轟音<span>日誌</span></div>
+    <nav>
+      <ul>
+        <li><a href="index.html">HOME</a></li>
+        <li><a href="blog.html">DIARY</a></li>
+        <li><a href="gallery.html" class="active">GALLERY</a></li>
+        <li><a href="playlist.html">PLAYLIST</a></li>
+        <li><a href="about.html">ABOUT</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="page-hero">
+  <p class="page-eyebrow">TRACK 02</p>
+  <h1 class="page-title">ギャラリー</h1>
+  <p class="page-sub">GALLERY</p>
+</div>
+
+<main>
+  <div class="filter-tabs">
+    <button class="active" data-filter="all">ALL</button>
+    <button data-filter="live">LIVE</button>
+    <button data-filter="jacket">JACKET</button>
+    <button data-filter="scene">SCENE</button>
+  </div>
+
+  <div class="gallery-grid">
+
+    <div class="gallery-item" data-cat="live">
+      <div class="gallery-placeholder">画像を<br>ここに配置<br>(live)</div>
+      <div class="gallery-caption">
+        <div class="cap-title">ライブ会場にて</div>
+        <div class="cap-date">2026.06</div>
+      </div>
+    </div>
+
+    <div class="gallery-item" data-cat="jacket">
+      <div class="gallery-placeholder">画像を<br>ここに配置<br>(jacket)</div>
+      <div class="gallery-caption">
+        <div class="cap-title">お気に入りのジャケット</div>
+        <div class="cap-date">2026.05</div>
+      </div>
+    </div>
+
+    <div class="gallery-item" data-cat="scene">
+      <div class="gallery-placeholder">画像を<br>ここに配置<br>(scene)</div>
+      <div class="gallery-caption">
+        <div class="cap-title">ライブハウス帰り道</div>
+        <div class="cap-date">2026.05</div>
+      </div>
+    </div>
+
+    <div class="gallery-item" data-cat="live">
+      <div class="gallery-placeholder">画像を<br>ここに配置<br>(live)</div>
+      <div class="gallery-caption">
+        <div class="cap-title">アンコール</div>
+        <div class="cap-date">2026.04</div>
+      </div>
+    </div>
+
+    <div class="gallery-item" data-cat="jacket">
+      <div class="gallery-placeholder">画像を<br>ここに配置<br>(jacket)</div>
+      <div class="gallery-caption">
+        <div class="cap-title">レコード棚</div>
+        <div class="cap-date">2026.03</div>
+      </div>
+    </div>
+
+    <div class="gallery-item" data-cat="scene">
+      <div class="gallery-placeholder">画像を<br>ここに配置<br>(scene)</div>
+      <div class="gallery-caption">
+        <div class="cap-title">練習スタジオ</div>
+        <div class="cap-date">2026.02</div>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="gallery-note">※ 画像はサンプルのプレースホルダーです。&lt;img&gt; タグに差し替えて使用してください。</p>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <p class="ai-notice">
+      当サイトに掲載されている文章・画像等のコンテンツを、AI（人工知能）の学習データとして無断で使用することを禁じます。<br>
+      This site prohibits the unauthorized use of its content (text, images) for AI training purposes.
+    </p>
+    <p class="copyright">© 2026 轟音日誌 — Azalea Creative Room</p>
+  </div>
+</footer>
+
+<script>
+  const buttons = document.querySelectorAll('.filter-tabs button');
+  const items = document.querySelectorAll('.gallery-item');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      items.forEach(item => {
+        item.style.display = (filter === 'all' || item.dataset.cat === filter) ? '' : 'none';
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
