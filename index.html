@@ -176,6 +176,51 @@
     50%{transform:scaleY(1);}
   }
   .hero-inner{position:relative;z-index:1;max-width:1100px;margin:0 auto;width:100%;}
+
+  /* ギター・ドラム イラスト */
+  .hero-instrument{
+    position:absolute;
+    top:50%;
+    z-index:0;
+    opacity:0.85;
+    filter:drop-shadow(0 0 18px rgba(255,122,26,0.35));
+    pointer-events:none;
+  }
+  .hero-instrument.guitar{
+    left:2%;
+    width:15vw;
+    max-width:190px;
+    min-width:110px;
+    transform:translateY(-56%) rotate(-8deg);
+    transform-origin:top center;
+    animation:sway 5s ease-in-out infinite;
+  }
+  .hero-instrument.drums{
+    right:2%;
+    width:22vw;
+    max-width:280px;
+    min-width:170px;
+    transform:translateY(-46%);
+    animation:thump 1.4s ease-in-out infinite;
+  }
+  .hero-instrument svg{
+    width:100%;height:auto;display:block;
+    stroke:var(--ember-light);
+  }
+  @keyframes sway{
+    0%,100%{transform:translateY(-56%) rotate(-8deg);}
+    50%{transform:translateY(-56%) rotate(-3deg);}
+  }
+  @keyframes thump{
+    0%,100%{transform:translateY(-46%) scale(1);}
+    50%{transform:translateY(-46%) scale(1.02);}
+  }
+  @media (max-width:900px){
+    .hero-instrument{display:none;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .hero-instrument{animation:none;}
+  }
   .hero-eyebrow{
     font-family:'JetBrains Mono',monospace;
     font-size:0.75rem;
@@ -397,6 +442,85 @@
 
 <div class="hero">
   <div class="eq-bars" id="eqBars"></div>
+
+  <div class="hero-instrument guitar" aria-hidden="true">
+    <svg viewBox="0 0 220 480" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- headstock -->
+      <path d="M88 6 L132 6 L138 42 L82 42 Z" stroke-width="2.5" stroke-linejoin="round"/>
+      <circle cx="80" cy="12" r="4" stroke-width="2"/>
+      <circle cx="76" cy="26" r="4" stroke-width="2"/>
+      <circle cx="80" cy="40" r="4" stroke-width="2"/>
+      <circle cx="140" cy="12" r="4" stroke-width="2"/>
+      <circle cx="144" cy="26" r="4" stroke-width="2"/>
+      <circle cx="140" cy="40" r="4" stroke-width="2"/>
+      <!-- neck -->
+      <rect x="100" y="42" width="20" height="248" rx="3" stroke-width="2.5"/>
+      <!-- frets -->
+      <line x1="100" y1="90" x2="120" y2="90" stroke-width="1.2" opacity="0.6"/>
+      <line x1="100" y1="140" x2="120" y2="140" stroke-width="1.2" opacity="0.6"/>
+      <line x1="100" y1="190" x2="120" y2="190" stroke-width="1.2" opacity="0.6"/>
+      <line x1="100" y1="240" x2="120" y2="240" stroke-width="1.2" opacity="0.6"/>
+      <!-- body (upper + lower bout, figure-8 silhouette) -->
+      <path d="M110 260
+               C 60 260, 40 300, 45 335
+               C 48 358, 65 368, 60 392
+               C 55 420, 75 452, 110 458
+               C 145 452, 165 420, 160 392
+               C 155 368, 172 358, 175 335
+               C 180 300, 160 260, 110 260 Z"
+            stroke-width="3" stroke-linejoin="round"/>
+      <!-- pickups -->
+      <rect x="92" y="345" width="36" height="10" rx="2" stroke-width="2"/>
+      <rect x="92" y="378" width="36" height="10" rx="2" stroke-width="2"/>
+      <!-- bridge -->
+      <rect x="88" y="410" width="44" height="8" rx="2" stroke-width="2"/>
+      <!-- strings -->
+      <line x1="104" y1="42" x2="97" y2="410" stroke-width="1" opacity="0.75"/>
+      <line x1="108" y1="42" x2="104" y2="410" stroke-width="1" opacity="0.75"/>
+      <line x1="112" y1="42" x2="112" y2="410" stroke-width="1" opacity="0.75"/>
+      <line x1="116" y1="42" x2="120" y2="410" stroke-width="1" opacity="0.75"/>
+      <line x1="120" y1="42" x2="127" y2="410" stroke-width="1" opacity="0.75"/>
+    </svg>
+  </div>
+
+  <div class="hero-instrument drums" aria-hidden="true">
+    <svg viewBox="0 0 520 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- cymbal stand + cymbal -->
+      <line x1="430" y1="330" x2="410" y2="90" stroke-width="2.5"/>
+      <line x1="410" y1="330" x2="395" y2="300" stroke-width="2"/>
+      <line x1="410" y1="330" x2="430" y2="300" stroke-width="2"/>
+      <line x1="410" y1="330" x2="410" y2="295" stroke-width="2"/>
+      <ellipse cx="410" cy="86" rx="78" ry="13" stroke-width="2.5"/>
+      <!-- rack tom -->
+      <ellipse cx="270" cy="118" rx="42" ry="16" stroke-width="2.5"/>
+      <path d="M228 118 L232 158 Q270 172 308 158 L312 118" stroke-width="2.5" stroke-linejoin="round"/>
+      <line x1="270" y1="70" x2="270" y2="118" stroke-width="2"/>
+      <!-- bass drum -->
+      <circle cx="250" cy="255" r="98" stroke-width="3"/>
+      <circle cx="250" cy="255" r="78" stroke-width="1.5" opacity="0.7"/>
+      <line x1="250" y1="157" x2="250" y2="177" stroke-width="1.5" opacity="0.6"/>
+      <line x1="250" y1="333" x2="250" y2="353" stroke-width="1.5" opacity="0.6"/>
+      <line x1="152" y1="255" x2="172" y2="255" stroke-width="1.5" opacity="0.6"/>
+      <line x1="328" y1="255" x2="348" y2="255" stroke-width="1.5" opacity="0.6"/>
+      <line x1="182" y1="187" x2="196" y2="199" stroke-width="1.5" opacity="0.6"/>
+      <line x1="318" y1="187" x2="304" y2="199" stroke-width="1.5" opacity="0.6"/>
+      <line x1="182" y1="323" x2="196" y2="311" stroke-width="1.5" opacity="0.6"/>
+      <line x1="318" y1="323" x2="304" y2="311" stroke-width="1.5" opacity="0.6"/>
+      <!-- legs -->
+      <line x1="185" y1="330" x2="165" y2="352" stroke-width="2.5"/>
+      <line x1="315" y1="330" x2="335" y2="352" stroke-width="2.5"/>
+      <!-- snare + stand -->
+      <ellipse cx="105" cy="215" rx="46" ry="16" stroke-width="2.5"/>
+      <path d="M62 215 L62 235 Q105 248 148 235 L148 215" stroke-width="2.5" stroke-linejoin="round"/>
+      <line x1="105" y1="248" x2="105" y2="300" stroke-width="2"/>
+      <line x1="105" y1="300" x2="80" y2="330" stroke-width="2"/>
+      <line x1="105" y1="300" x2="130" y2="330" stroke-width="2"/>
+      <!-- drumsticks (crossed) -->
+      <line x1="180" y1="60" x2="245" y2="120" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="245" y1="60" x2="180" y2="120" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+  </div>
+
   <div class="hero-inner">
     <p class="hero-eyebrow">NOISE JOURNAL — EST. 2026</p>
     <h1 class="hero-title">轟音日誌</h1>
